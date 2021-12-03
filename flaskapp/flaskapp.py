@@ -46,8 +46,6 @@ def register():
         if request.method == "POST" and 'username' in request.form and 'password' in request.form and 'email' in request.form :
             username = request.form['username']
             password = request.form['password']
-            first_name = request.form['first_name']
-            last_name = request.form['last_name']
             email = request.form['email']
             conn = sqlite3.connect(DATABASE)
             cur = conn.cursor()
@@ -68,14 +66,13 @@ def register():
                 msg = 'Please fill out the form !'
                 return render_template('register.html', msg=msg)
             else:
-                cur.execute("""INSERT INTO users (username, password, first_name, last_name, email) VALUES (?, ?, ?, ?, ?)""", (username, password, first_name, last_name, email))
+                cur.execute("""INSERT INTO users (username, password, email) VALUES (?, ?, ?)""", (username, password, email))
                 msg = "Thanks for registering!"
 
             conn.commit()
             conn.close()
          
             return redirect(url_for('viewdb'))
-            #return redirect('http://127.0.0.1:5000/viewdb')
         elif request.method == 'POST':
             msg = 'Please fill out the form'
         return render_template("register.html", msg=msg)
@@ -84,10 +81,6 @@ def register():
 def viewdb():
     rows = execute_query("""SELECT * FROM users""")
     return '<br>'.join(str(row) for row in rows)
-
-@app.route('/upload')
-def upload():
-    return render_template('upload.html')
 
 @app.route('/display')
 def display():
