@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <p>Count the number of words</p>
+    <input type="file">
+    <textarea id='preview' rows=50 cols=150></textarea>
+    <button onclick="countWords()"> Count Words & save the output. </button>
+    <div id="numWordsOutput">0 words</div>
+
+
+</body>
+<script>
+    var storedNum = localStorage.getItem("storedNum")
+
+    let input = document.querySelector('input');
+    let textarea = document.querySelector('textarea');
+    input.addEventListener('change', () => {
+        let files = input.files;
+        if (files.length == 0) return;
+        const file = files[0];
+        let reader = new FileReader();
+        reader.onload = (e) => {
+            const file = e.target.result;
+            const lines = file.split('\n');
+            textarea.value = lines.join('\n');
+        };
+        reader.onerror = (e) => alert(e.target.error.name);
+        reader.readAsText(file);
+
+    });
+
+
+    function countWords() {
+        filename = "output.txt";
+        var text;
+        var element = document.getElementById("preview");
+        text = element.value;
+
+        var numWords = 0;
+        for (var i = 0; i < text.length; i++) {
+            var currentCharacter = text[i];
+            if (currentCharacter == " ") {
+                numWords = numWords + 1;
+            }
+        }
+
+        numWords = numWords + 1;
+        document.getElementById("numWordsOutput").innerHTML = numWords + "words";
+
+        str = "Number of words = " + numWords;
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(str));
+        element.setAttribute('download', filename);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+
+
+        localStorage.setItem("storedNum", str);
+        document.getElementById("storedNum").innerHTML = str + " SAVED";
+
+    }
+</script>
+
+
+
+</html>
